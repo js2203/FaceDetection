@@ -8,19 +8,45 @@ from load_people import *
 
 class FaceDetector(object):
 
-    def __init__(self, xml_path):
+    def __init__(self, xml_path, person):
         self.classifier = cv2.CascadeClassifier(xml_path)
+        self.train_directory_path = '../people/train/{}'.format(person)
+        self.validate_directory_path = '../people/test/{}'.format(person)
+        self.person = person
+        if not os.path.exists(self.train_directory_path):
+            os.mkdir(self.train_directory_path)
+        if not os.path.exists(self.validate_directory_path):
+            os.mkdir(self.validate_directory_path)
 
-    def detect(self, image):
+    def detect(self, image, index):
         scale_factor = 1.2
         min_neighbors = 3
         min_size = (224, 224)
-        faces_coord = self.classifier.detectMultiScale(image,
-                                                       scaleFactor=scale_factor,
-                                                       minNeighbors=min_neighbors,
-                                                       minSize=min_size,
-                                                       flags=cv2.CASCADE_SCALE_IMAGE)
-        return faces_coord
+        faces_coord = self.classifier.detectMultiScale(
+            image,
+            scaleFactor=scale_factor,
+            minNeighbors=min_neighbors,
+            minSize=min_size,
+            flags=cv2.CASCADE_SCALE_IMAGE)
+
+        if faces_coord is ():
+            return None
+        else:
+            faces = normalize_faces(image, faces_coord)
+            for i, face in enumerate(faces):
+                file_name = '{}_{}_{}.jpeg'.format(self.person,
+                                                   index,
+                                                   i)
+                if index < 80:
+                    file_path = os.path.join(self.train_directory_path,
+                                             file_name)
+                else:
+                    file_path = os.path.join(self.validate_directory_path,
+                                             file_name)
+
+                if not os.path.exists(file_path):
+                    cv2.imwrite(file_path, face)
+                return face
 
 
 def cut_faces(image, faces_coord):
@@ -52,12 +78,13 @@ def normalize_faces(image, faces_coord):
     return faces
 
 
+"""
 people_dictionary = dataset()
 
 for person in people_dictionary:
-    directory_path = '../people/{}/crop'.format(person)
+    directory_path = '../people/{}'.format(person)
     if not os.path.exists(directory_path):
-        os.mkdir('../people/{}/crop'.format(person))
+        os.mkdir('../people/{}'.format(person))
 
     for index, image in enumerate(people_dictionary[person]):
         detector = FaceDetector("haarcascade_frontalface_default.xml")
@@ -71,3 +98,4 @@ for person in people_dictionary:
             file_path = os.path.join(directory_path, file_name)
             if not os.path.exists(file_path):
                 cv2.imwrite(file_path, faces[i])
+"""
