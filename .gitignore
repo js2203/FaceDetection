@@ -130,3 +130,4 @@ dmypy.json
 
 src/people
 src/raw_people
+src/weights
