@@ -14,7 +14,7 @@ def load_model(model_name: str):
         for layer in vgg16.layers:
             layer.trainable = False
 
-        number_classes = len(glob('../people/*'))
+        number_classes = len(glob('../people/train/*'))
 
         x = keras.layers.Flatten()(vgg16.output)
 

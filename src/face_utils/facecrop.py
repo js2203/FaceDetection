@@ -21,7 +21,7 @@ class FaceDetector(object):
     def detect(self, image, index):
         scale_factor = 1.2
         min_neighbors = 3
-        min_size = (224, 224)
+        min_size = (200, 200)
         faces_coord = self.classifier.detectMultiScale(
             image,
             scaleFactor=scale_factor,

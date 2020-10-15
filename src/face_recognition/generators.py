@@ -2,7 +2,7 @@ import sys
 from tensorflow.keras.preprocessing.image import *
 
 sys.path.insert(0, './')
-from augmentation import *
+from data_augmentation import *
 
 
 def get_generator():
