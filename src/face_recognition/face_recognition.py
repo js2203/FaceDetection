@@ -1,6 +1,6 @@
 import os
 from glob import glob
-from tensorflow import keras
+import tensorflow as tf
 from PIL import Image
 import numpy as np
 import cv2
@@ -13,7 +13,12 @@ from facecrop import *
 
 def face_recognition(model_name: str):
 
-    model = keras.models.load_model('../weights/'+model_name)
+    physical_devices = tf.config.experimental.list_physical_devices('GPU')
+    assert len(
+        physical_devices) > 0, "Not enough GPU hardware devices available"
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+    model = tf.keras.models.load_model('../weights/'+model_name)
 
     classifier = cv2.CascadeClassifier(
         '../face_utils/haarcascade_frontalface_default.xml')
@@ -37,6 +42,8 @@ def face_recognition(model_name: str):
             minSize=(100, 100),
             flags=cv2.CASCADE_SCALE_IMAGE)
 
+        prediction = None
+
         if faces is ():
             pass
         else:
@@ -45,13 +52,13 @@ def face_recognition(model_name: str):
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
                 image = Image.fromarray(face, 'RGB')
-                image_array = np.array(image)
+                image_array = np.array(image, dtype=np.float32)
+                image_array /= 255
                 image_array = np.expand_dims(image_array, axis=0)
                 prediction = model.predict(image_array)
-
-            print(np.argmax(prediction))
-            predicted_name = label[np.argmax(prediction)]
-
+                print(prediction)
+                predicted_name = label[np.argmax(prediction)]
+            
             cv2.putText(frame, predicted_name, (50, 50),
                         cv2.FONT_HERSHEY_COMPLEX, 1,
                         (0, 255, 0), 2)
@@ -65,4 +72,4 @@ def face_recognition(model_name: str):
 
 
 if __name__ == '__main__':
-    face_recognition('vgg16_10-15-2020-12_13.h5')
+    face_recognition('vgg16_10-15-2020-20_31.h5')
