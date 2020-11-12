@@ -53,11 +53,16 @@ def face_recognition(model_name: str):
             for face in faces_only:
                 image = Image.fromarray(face, 'RGB')
                 image_array = np.array(image, dtype=np.float32)
-                image_array /= 255
+                # image_array /= 255
+                image_array /= 127.5
+                image_array -= 1
                 image_array = np.expand_dims(image_array, axis=0)
                 prediction = model.predict(image_array)
                 print(prediction)
-                predicted_name = label[np.argmax(prediction)]
+                if prediction[0][np.argmax(prediction)] > 10.0:
+                    predicted_name = label[np.argmax(prediction)]
+                else:
+                    predicted_name = 'unknown'
             
             cv2.putText(frame, predicted_name, (50, 50),
                         cv2.FONT_HERSHEY_COMPLEX, 1,
@@ -72,4 +77,4 @@ def face_recognition(model_name: str):
 
 
 if __name__ == '__main__':
-    face_recognition('vgg16_10-15-2020-20_31.h5')
+    face_recognition('vgg16_linear_11-06-2020-17_04.h5')

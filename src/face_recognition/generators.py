@@ -5,10 +5,15 @@ sys.path.insert(0, './')
 from data_augmentation import *
 
 
-def get_generator():
+def get_generator(model):
 
-    training_data_generator = get_data_generator(True)
-    validation_data_generator = get_data_generator(True, False)
+    if model == 'resnetv2':
+        training_data_generator = get_data_generator(True, True, 'resnetv2')
+        validation_data_generator = get_data_generator(True, False, 'resnetv2')
+    else:
+        training_data_generator = get_data_generator(True)
+        validation_data_generator = get_data_generator(True, False)
+
 
     training_directory = '../people/train'
     validation_directory = '../people/test'

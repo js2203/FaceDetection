@@ -20,7 +20,7 @@ class FaceDetector(object):
 
     def detect(self, image, index):
         scale_factor = 1.2
-        min_neighbors = 3
+        min_neighbors = 5
         min_size = (200, 200)
         faces_coord = self.classifier.detectMultiScale(
             image,
@@ -37,7 +37,7 @@ class FaceDetector(object):
                 file_name = '{}_{}_{}.jpeg'.format(self.person,
                                                    index,
                                                    i)
-                if index < 80:
+                if index < 200:
                     file_path = os.path.join(self.train_directory_path,
                                              file_name)
                 else:

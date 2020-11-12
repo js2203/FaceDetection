@@ -7,17 +7,11 @@ from transfer_learning_model import *
 from generators import *
 
 
-def face_recognition_model(model_name: str):
+def face_recognition_model(model_name: str, activation: str):
     # load the desired keras model with transfer learning enabled
     model = load_model(model_name)
 
-    model.compile(
-        loss='categorical_crossentropy',
-        optimizer='adam',
-        metrics=['accuracy', 'mae']
-    )
-
-    training_data, validation_data = get_generator()
+    training_data, validation_data = get_generator(model_name)
 
     history = model.fit(
         training_data,
@@ -28,16 +22,10 @@ def face_recognition_model(model_name: str):
     )
 
     save_time = datetime.now().strftime('%m-%d-%Y-%H_%M')
-    model.save('../weights/{}_{}.h5'.format(model_name,
-                                         save_time))
+    model.save('../weights/{}_{}_{}.h5'.format(model_name,
+                                               activation,
+                                               save_time))
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
-    parser.add_argument("-n", "--name",
-                        help="Which Model you want to train")
-
-    args = parser.parse_args()
-    model_name = args.name
-
-    face_recognition_model(model_name)
+    face_recognition_model('vgg16', 'linear')

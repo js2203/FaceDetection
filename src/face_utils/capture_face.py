@@ -16,7 +16,7 @@ def capture_face(person):
     detector = FaceDetector("haarcascade_frontalface_default.xml", person)
 
     # Collect 100 samples of your face from webcam input
-    while count <= 100:
+    while count <= 220:
 
         ret, frame = video_capture.read()
         face = detector.detect(frame, count)
