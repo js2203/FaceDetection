@@ -32,12 +32,18 @@ class FaceDetector(object):
         if faces_coord is ():
             return None
         else:
+            for (x, y, w, h) in faces_coord:
+                padding = 10
+                x -= padding
+                y -= padding
+                w += padding*2
+                h += padding*2
             faces = normalize_faces(image, faces_coord)
             for i, face in enumerate(faces):
                 file_name = '{}_{}_{}.jpeg'.format(self.person,
                                                    index,
                                                    i)
-                if index < 200:
+                if index < 500:
                     file_path = os.path.join(self.train_directory_path,
                                              file_name)
                 else:

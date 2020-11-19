@@ -44,18 +44,25 @@ def face_recognition(model_name: str):
 
         prediction = None
 
-        if faces is ():
+        if faces == ():
             pass
         else:
-            for (x,y,w,h) in faces:
+            for (x, y, w, h) in faces:
+                padding = 10
+                x -= padding
+                y -= padding
+                w += padding*2
+                h += padding*2
                 cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,255),2)
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
                 image = Image.fromarray(face, 'RGB')
                 image_array = np.array(image, dtype=np.float32)
-                # image_array /= 255
-                image_array /= 127.5
-                image_array -= 1
+                if model_name.split('_')[0] == 'vgg16':
+                    image_array /= 255
+                else:
+                    image_array /= 127.5
+                    image_array -= 1
                 image_array = np.expand_dims(image_array, axis=0)
                 prediction = model.predict(image_array)
                 print(prediction)
@@ -77,4 +84,4 @@ def face_recognition(model_name: str):
 
 
 if __name__ == '__main__':
-    face_recognition('vgg16_linear_11-06-2020-17_04.h5')
+    face_recognition('resnetv2_linear_11-19-2020-15_43.h5')

@@ -2,9 +2,9 @@ from tensorflow import keras
 from glob import glob
 
 
-def load_model(model_name: str):
+def load_model(model_name: str, activation: str):
     number_classes = len(glob('../people/train/*'))
-    if 'vgg16' in model_name:
+    if model_name == 'vgg16':
         vgg16 = keras.applications.VGG16(
             include_top=False,
             input_shape=(224, 224, 3),
@@ -17,7 +17,7 @@ def load_model(model_name: str):
         x = keras.layers.Flatten()(vgg16.output)
 
         prediction = keras.layers.Dense(number_classes,
-                                        activation='linear')(x)
+                                        activation=activation)(x)
         # sigmoid?
 
         model = keras.models.Model(inputs=vgg16.input,
@@ -42,11 +42,11 @@ def load_model(model_name: str):
         model.add(keras.layers.Dropout(0.3))
         model.add(keras.layers.Dense(512, activation='relu'))
         model.add(keras.layers.Dropout(0.3))
-        model.add(keras.layers.Dense(number_classes, activation='sigmoid'))
+        model.add(keras.layers.Dense(number_classes, activation=activation))
 
     sgd = keras.optimizers.SGD(
-            learning_rate=0.01,
-            momentum=0.09)
+            learning_rate=0.001,
+            momentum=0.9)
 
     model.compile(
         loss=keras.losses.CategoricalCrossentropy(from_logits=True),

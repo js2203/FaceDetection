@@ -9,23 +9,23 @@ from generators import *
 
 def face_recognition_model(model_name: str, activation: str):
     # load the desired keras model with transfer learning enabled
-    model = load_model(model_name)
+    model = load_model(model_name, activation)
 
     training_data, validation_data = get_generator(model_name)
 
     history = model.fit(
         training_data,
         validation_data=validation_data,
-        epochs=5,
+        epochs=2,
         steps_per_epoch=len(training_data),
         validation_steps=len(validation_data)
     )
 
     save_time = datetime.now().strftime('%m-%d-%Y-%H_%M')
-    model.save('../weights/{}_{}_{}.h5'.format(model_name,
-                                               activation,
-                                               save_time))
+    model.save('../weights/{}_{}_{}'.format(model_name,
+                                            activation,
+                                            save_time))
 
 
 if __name__ == '__main__':
-    face_recognition_model('vgg16', 'linear')
+    face_recognition_model('resnetv2', 'linear')
