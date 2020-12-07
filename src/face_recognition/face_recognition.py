@@ -37,7 +37,7 @@ def face_recognition(model_name: str):
 
         faces = classifier.detectMultiScale(
             frame,
-            scaleFactor=1.3,
+            scaleFactor=1.1,
             minNeighbors=5,
             minSize=(100, 100),
             flags=cv2.CASCADE_SCALE_IMAGE)
@@ -48,11 +48,11 @@ def face_recognition(model_name: str):
             pass
         else:
             for (x, y, w, h) in faces:
-                padding = 10
+                padding = 30
                 x -= padding
                 y -= padding
-                w += padding*2
-                h += padding*2
+                w += padding
+                h += padding
                 cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,255),2)
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
@@ -65,8 +65,9 @@ def face_recognition(model_name: str):
                     image_array -= 1
                 image_array = np.expand_dims(image_array, axis=0)
                 prediction = model.predict(image_array)
-                print(prediction)
-                if prediction[0][np.argmax(prediction)] > 10.0:
+                for i, item in enumerate(prediction[0]):
+                    print(f'{label[i]}: {float(item)}')
+                if prediction[0][np.argmax(prediction)] > 0.50:
                     predicted_name = label[np.argmax(prediction)]
                 else:
                     predicted_name = 'unknown'
@@ -84,4 +85,4 @@ def face_recognition(model_name: str):
 
 
 if __name__ == '__main__':
-    face_recognition('resnetv2_linear_11-19-2020-15_43.h5')
+    face_recognition('resnetv2_softmax_12-04-2020-13_51')

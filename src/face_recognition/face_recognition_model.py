@@ -28,4 +28,4 @@ def face_recognition_model(model_name: str, activation: str):
 
 
 if __name__ == '__main__':
-    face_recognition_model('resnetv2', 'linear')
+    face_recognition_model('resnetv2', 'softmax')

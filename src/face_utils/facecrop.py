@@ -33,7 +33,7 @@ class FaceDetector(object):
             return None
         else:
             for (x, y, w, h) in faces_coord:
-                padding = 10
+                padding = 30
                 x -= padding
                 y -= padding
                 w += padding*2

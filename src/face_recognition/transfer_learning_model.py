@@ -48,6 +48,11 @@ def load_model(model_name: str, activation: str):
             learning_rate=0.001,
             momentum=0.9)
 
+    for layer in model.layers:
+        if isinstance(layer, keras.layers.Conv2D) or \
+                isinstance(layer, keras.layers.Dense):
+            layer.kernel_regularizer = keras.regularizers.l2(0.001)
+
     model.compile(
         loss=keras.losses.CategoricalCrossentropy(from_logits=True),
         optimizer=sgd,
